@@ -27,7 +27,7 @@ public class ReceiveNewRequest implements ReceiveNewRequestEndPointInterface {
     @Inject
     private JMSContext context;
 
-    @Resource(lookup = "jms/TextFileQueue")
+    @Resource(lookup = "jms/QueueTransferFile")
     private Queue textFileQueue; 
     
     @Override
@@ -37,7 +37,6 @@ public class ReceiveNewRequest implements ReceiveNewRequestEndPointInterface {
         //Envoyer le fichier dans la queue
         
         File file = new File();
-        //file.setContent(message.getBody(String.class));
         file.setContent(text);
         file.setName(name);
         file.setKey(key);
@@ -53,23 +52,12 @@ public class ReceiveNewRequest implements ReceiveNewRequestEndPointInterface {
         
         try 
         {
-            /*
-            jaxbContext = JAXBContext.newInstance(File.class);
-            
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-
-            StringWriter writer = new StringWriter();
-
-            jaxbMarshaller.marshal(textFile, writer);
-            String xmlMessage = writer.toString();
-            */
             System.out.println("Envoi du fichier " + textFile.getName());
 
             TextMessage msg = context.createTextMessage(textFile.toString()); //xmlMessage
 
             context.createProducer().send(textFileQueue, msg);
         } 
-        //catch(JAXBException ex)
         catch(Exception ex)
         {
             Logger.getLogger(ReceiveNewRequest.class.getName()).log(Level.SEVERE, null, ex);

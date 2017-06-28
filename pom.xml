@@ -88,26 +88,6 @@
                 <groupId>org.jvnet.jax-ws-commons</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
                 <version>2.3</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>wsimport</goal>
-                        </goals>
-                        <configuration>
-                            <wsdlFiles>
-                                <wsdlFile>localhost_45328/CheckingService/CheckingServiceBean.wsdl</wsdlFile>
-                            </wsdlFiles>
-                            <packageName>com.exia.remote</packageName>
-                            <vmArgs>
-                                <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
-                            </vmArgs>
-                            <wsdlLocation>http://localhost:45328/CheckingService/CheckingServiceBean?WSDL</wsdlLocation>
-                            <staleFile>${project.build.directory}/jaxws/stale/CheckingServiceBean.stale</staleFile>
-                        </configuration>
-                        <id>wsimport-generate-CheckingServiceBean</id>
-                        <phase>generate-sources</phase>
-                    </execution>
-                </executions>
                 <dependencies>
                     <dependency>
                         <groupId>javax.xml</groupId>
