@@ -5,6 +5,7 @@
  */
 package com.exia.servicemom;
 
+import java.util.List;
 import javax.jws.WebMethod;
 import javax.jws.WebResult;
 import javax.jws.WebService;
@@ -18,5 +19,5 @@ import javax.jws.WebService;
 public interface ReceiveNewRequestEndPointInterface {
     @WebMethod(operationName = "transferTextFile")
     @WebResult(name = "resultTransfer")
-    Boolean getTextFile(String text, String name, String key);
+    List<String> getTextFile(List<String> content, List<String> name, String key, String tokenUser);
 }

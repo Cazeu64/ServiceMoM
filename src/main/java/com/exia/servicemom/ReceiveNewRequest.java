@@ -6,12 +6,17 @@
 package com.exia.servicemom;
 
 import com.exia.model.File;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
+import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.jws.WebService;
@@ -31,34 +36,45 @@ public class ReceiveNewRequest implements ReceiveNewRequestEndPointInterface {
     private Queue textFileQueue; 
     
     @Override
-    public Boolean getTextFile(String text, String name, String key) 
+    public List<String> getTextFile(List<String> content, List<String> name, String key, String tokenUser) 
     {
         //Reception d'un fichier depuis le C#
         //Envoyer le fichier dans la queue
         
-        File file = new File();
-        file.setContent(text);
-        file.setName(name);
-        file.setKey(key);
+        System.out.println("Nouvelle demande : clef : " + key);
         
-        putTextFileInJMSQueue(file);
+        List<File> files = new ArrayList<File>(); 
         
-        return true;
+        for(int i = 0; i < content.size(); i++)
+        {
+            File file = new File();
+            file.setContent(content.get(i));
+            file.setName(name.get(i));
+            file.setKey(key);
+            file.setTokenUser(tokenUser);
+            
+            files.add(file);
+        }
+
+        putTextFileInJMSQueue(files);
+        
+        return name;
     }
 
-    private void putTextFileInJMSQueue(File textFile)
+    private void putTextFileInJMSQueue(List<File> files)
     {
-        //JAXBContext jaxbContext;
-        
         try 
         {
-            System.out.println("Envoi du fichier " + textFile.getName());
+            //Solution avec JSON
+            ObjectMapper mapper = new ObjectMapper();
 
-            TextMessage msg = context.createTextMessage(textFile.toString()); //xmlMessage
+            String jsonInString = mapper.writeValueAsString(files);
+ 
+            TextMessage msg = context.createTextMessage(jsonInString);
 
             context.createProducer().send(textFileQueue, msg);
         } 
-        catch(Exception ex)
+        catch(JsonProcessingException ex) 
         {
             Logger.getLogger(ReceiveNewRequest.class.getName()).log(Level.SEVERE, null, ex);
         }

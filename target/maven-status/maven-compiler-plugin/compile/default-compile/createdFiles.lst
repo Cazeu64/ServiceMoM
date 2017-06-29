@@ -1,3 +1,3 @@
-com\exia\model\File.class
 com\exia\servicemom\ReceiveNewRequest.class
+com\exia\model\File.class
 com\exia\servicemom\ReceiveNewRequestEndPointInterface.class
